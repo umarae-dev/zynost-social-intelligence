@@ -50,7 +50,7 @@ class SocialProvider:
 |---|---|
 | **Responsibility** | Sole public orchestrator. Run **HLD** pipeline: concurrent isolated fetch → match → score → manipulate → aggregate → provenance/quality → JSON-safe dict. Map all-unavailable to `status = unavailable` without raising (`FR-INT-05`, **HLD-07**). Apply horizon as a behavioral input (**HLD-04**). |
 | **Who calls it** | Downstream consumers (later FastAPI/Celery). Tests. Package `__init__` may re-export this function only. |
-| **Interface** | `async def build_social_sentiment(asset: AssetIdentity, horizon: str = "swing") -> dict` (`FR-INT-01`). Unrecognized horizon is handled safely (`FR-HOR-03`) — default/report, never an unhandled crash. Result identity: `name = social_sentiment`, `role = context`, `source_class = multi_source_social_intelligence` (`FR-INT-03`). Never emit `BUY`/`SELL`/`LONG`/`SHORT` (`FR-INT-04`). |
+| **Interface** | `async def build_social_sentiment(asset: AssetIdentity, horizon: str = "swing") -> dict` (`FR-INT-01`). Unrecognized horizon is handled safely (`FR-HOR-03`) — default/report, never an unhandled crash. Result identity: `name = social_sentiment`, `role = context`, `source_class = multi_source_social_intelligence` (`FR-INT-03`). Never emit `BUY`/`SELL`/`LONG`/`SHORT` (`FR-INT-04`). Keyword-only `providers` / `cache_ctx` / `observed_at` are test hooks, not credentials. |
 | **Must NOT** | Contain provider HTTP; embed formulas; persist to PostgreSQL; use process-memory as cache of record; raise when every provider is down; import LLM SDKs (`CON-01`, **HLD-09**). |
 
 Internal (not public): construct the provider list, bound-concurrency gather, pass `since_minutes` into adapters, fold `ProviderFetchOutcome` values into matching.
