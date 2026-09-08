@@ -124,6 +124,25 @@ Every mention placed in `asset_mentions` MUST carry three fields, filled togethe
 | **MAT-08** | Matching is deterministic and rule-based — no LLM. |
 | **MAT-09** | Matching never invents identity fields or official accounts beyond what `AssetIdentity` supplies. |
 | **MAT-10** | `matching.py` consumes `AssetIdentity` as an opaque value; no owned mutable registry, ready for a future Canonical Asset Registry swap. |
+| **MAT-11** | Per-mention `match_confidence` is the max fired class (contract 0.95 … symbol+generic 0.45); batch `asset_match_score` is the QLY-03 mean. |
+
+---
+
+## 8. Implemented confidence classes *(this slice)*
+
+`matching.py` assigns **one** `match_confidence` per accepted mention: the **maximum** class that fired (never a sum of overlapping signals).
+
+| Class | Confidence | When it fires |
+|-------|------------|----------------|
+| Contract address exact (case-insensitive substring) | `0.95` | `contract_address` occurs in text |
+| Official account origin or reference | `0.85` | Text `@handle` / `r/` / `t.me/` / snowflake, or metadata `subreddit` / `channel` / `channel_id` / `guild_id` matches an official identity |
+| Official name phrase | `0.80` | `name` as a whole-word phrase |
+| Non-collision alias phrase | `0.70` | `aliases` phrase that is not in the collision set |
+| Non-collision symbol + chain or project term | `0.60` | Ticker plus chain or a name/alias token of length ≥ 4 |
+| Collision symbol + multiple context terms | `0.55` | Collision ticker plus ≥ 1 non-generic context (chain or project term) **and** ≥ 2 independent context terms total |
+| Non-collision symbol + generic crypto word | `0.45` | Ticker plus at least one generic crypto/market term |
+
+`MatchBatch.asset_match_score` is the **QLY-03** mean of those confidences, or `0` when `asset_mentions` is empty. Off-topic text is dropped; generic crypto chatter that fails gating goes to `market_wide` with empty match evidence.
 
 ---
 
