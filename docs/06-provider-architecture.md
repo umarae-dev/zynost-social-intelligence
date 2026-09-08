@@ -132,6 +132,12 @@ To avoid duplicated logic across `x.py` / `reddit.py` / `telegram.py` / `discord
 
 **PRV-07 — No scoring in adapters.** Adapters map and normalize only. Sentiment, manipulation, and match evidence are computed downstream (**LLD-04**); an adapter must never set `matched_terms`, `match_confidence`, or any score-shaped field itself.
 
+### X (`providers/x.py`)
+
+**PRV-X-01 — Recent search, credential-gated.** Endpoint `GET https://api.x.com/2/tweets/search/recent`. Both `X_API_KEY` and `X_BEARER_TOKEN` must be present (**CFG-03**); only the bearer is sent as `Authorization: Bearer …`. The API key is a presence gate, not a second header. Missing/blank → `not_configured` before any GET. HTTP 401/403 → `unauthorized`; 429 → `rate_limited` (no retry); 502–504 → `TransientProviderError` for **SEC-08**; other 4xx → `malformed`. HTTP is injected (`HttpGetter`) so tests never open a socket (**TST-01**). Default transport is `httpx`.
+
+**PRV-X-02 — Query and engagement.** The search query is built from `AssetIdentity` in this order: official name, `from:` official X handles (`@` stripped), contract address if present, aliases, then `$SYMBOL`. Name is always first so the query is never ticker-only (`FR-ID-02`). Clauses are joined with `OR` and truncated from the end to **512** characters (X recent-search operator cap). `start_time` is `now − since_minutes`, clamped to `[1, 7×24×60]` minutes (X recent-search window). `max_results = 100`. Engagement = `like_count + retweet_count`; missing or non-finite native counts → `0`. Author id and `https://x.com/i/web/status/<id>` are hashed (**SEC-11**); plaintext handles/URLs never land on `SocialMention`. Incomplete tweets inside a valid envelope are skipped, not a whole-fetch `malformed`.
+
 ---
 
 ## 9. Decision index
@@ -145,6 +151,8 @@ To avoid duplicated logic across `x.py` / `reddit.py` / `telegram.py` / `discord
 | **PRV-05** | Adapters are real implementations gated by credentials: absent → `not_configured`, rejected → `unauthorized`, valid → live fetch. Never a purchase demand, never fabricated data. |
 | **PRV-06** | `base.py` holds only shared, provider-agnostic helpers — no per-provider URLs, payloads, or credential globals. |
 | **PRV-07** | Adapters perform I/O and mapping only; scoring/matching/manipulation are strictly downstream. |
+| **PRV-X-01** | X recent search via bearer; both env names required; injectable HTTP; status mapping as **PRV-05** / **SEC-08**. |
+| **PRV-X-02** | Multi-signal query (never ticker-only); likes+retweets engagement; hashed author/URL; skip bad items. |
 
 ---
 

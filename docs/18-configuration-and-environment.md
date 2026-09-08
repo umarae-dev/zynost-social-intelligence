@@ -91,7 +91,7 @@ Paid APIs: filling these vars is optional. Empty → that adapter stays `not_con
 `pyproject.toml` SHALL:
 
 - Declare the package and `tests/` as the pytest path (tooling detail MAY live in doc 19).
-- List runtime deps needed for HTTP and Redis **clients** — never `anthropic`, `openai`, `google.generativeai`, or other LLM SDKs (`CON-01`, **TST-LLM**).
+- List runtime deps needed for HTTP and Redis **clients** (`httpx` for X; Redis client later) — never `anthropic`, `openai`, `google.generativeai`, or other LLM SDKs (`CON-01`, **TST-LLM**).
 - Commit no secret, no production `REDIS_URL`.
 
 Lockfiles, if added later, are scanned by **TST-LLM**. Exact third-party version pins are an implementation choice as long as they stay LLM-free and compatible with 3.12.
