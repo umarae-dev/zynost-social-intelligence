@@ -138,6 +138,12 @@ To avoid duplicated logic across `x.py` / `reddit.py` / `telegram.py` / `discord
 
 **PRV-X-02 — Query and engagement.** The search query is built from `AssetIdentity` in this order: official name, `from:` official X handles (`@` stripped), contract address if present, aliases, then `$SYMBOL`. Name is always first so the query is never ticker-only (`FR-ID-02`). Clauses are joined with `OR` and truncated from the end to **512** characters (X recent-search operator cap). `start_time` is `now − since_minutes`, clamped to `[1, 7×24×60]` minutes (X recent-search window). `max_results = 100`. Engagement = `like_count + retweet_count`; missing or non-finite native counts → `0`. Author id and `https://x.com/i/web/status/<id>` are hashed (**SEC-11**); plaintext handles/URLs never land on `SocialMention`. Incomplete tweets inside a valid envelope are skipped, not a whole-fetch `malformed`.
 
+### Reddit (`providers/reddit.py`)
+
+**PRV-R-01 — OAuth client credentials, then search.** Token `POST https://www.reddit.com/api/v1/access_token` (`grant_type=client_credentials`, HTTP Basic with client id/secret). Search `GET https://oauth.reddit.com/search` with the bearer. All three of `REDDIT_CLIENT_ID`, `REDDIT_CLIENT_SECRET`, `REDDIT_USER_AGENT` must be present (**CFG-03**); the user-agent is sent on both calls (Reddit requires it). Missing/blank → `not_configured` before any HTTP. HTTP 401/403 → `unauthorized`; 429 → `rate_limited` (no retry); 502–504 → `TransientProviderError` for **SEC-08**; other 4xx → `malformed`. HTTP is injected (`HttpTransport`) so tests never open a socket (**TST-01**). Default transport is `httpx`. A 200 token envelope without `access_token` is `malformed`. Tokens are not stored in process globals.
+
+**PRV-R-02 — Query, window, and engagement.** The search query is built from `AssetIdentity` in this order: official name, official Reddit identities (`r/`/`/r/` → `subreddit:`, `u/`/`user/` → `author:`, otherwise `subreddit:`), contract address if present, aliases, then `SYMBOL`. Name is always first so the query is never ticker-only (`FR-ID-02`). Clauses are joined with `OR` and truncated from the end to **512** characters. Search uses `sort=new`, `type=link` (posts only, not comments), `limit=100`, `raw_json=1`. Reddit search has no `start_time`; lookback is `now − since_minutes` clamped to `[1, 7×24×60]` minutes, and posts with `created_utc` before that cutoff are skipped. Engagement = native `score`; missing or non-finite → `0`. Author is hashed from `author_fullname`; permalink is hashed as `https://www.reddit.com` + path (**SEC-11**). Subreddit may be stored in `metadata` (not PII). Incomplete children inside a valid listing are skipped, not a whole-fetch `malformed`.
+
 ---
 
 ## 9. Decision index
@@ -153,6 +159,8 @@ To avoid duplicated logic across `x.py` / `reddit.py` / `telegram.py` / `discord
 | **PRV-07** | Adapters perform I/O and mapping only; scoring/matching/manipulation are strictly downstream. |
 | **PRV-X-01** | X recent search via bearer; both env names required; injectable HTTP; status mapping as **PRV-05** / **SEC-08**. |
 | **PRV-X-02** | Multi-signal query (never ticker-only); likes+retweets engagement; hashed author/URL; skip bad items. |
+| **PRV-R-01** | Reddit OAuth client-credentials then search; all three env names required; injectable HTTP; status mapping as **PRV-05** / **SEC-08**. |
+| **PRV-R-02** | Multi-signal query (never ticker-only); post listings only; score engagement; hashed author/permalink; skip old/bad items. |
 
 ---
 

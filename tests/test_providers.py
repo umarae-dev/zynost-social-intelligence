@@ -27,6 +27,7 @@ from zynost_social.providers.base import (
     sanitize_text,
     validate_body_size,
 )
+from zynost_social.providers.reddit import RedditProvider
 from zynost_social.providers.x import XProvider
 
 ASSET = AssetIdentity(asset_id="btc", symbol="BTC", name="Bitcoin")
@@ -196,11 +197,22 @@ async def test_blank_credential_is_absent(monkeypatch: pytest.MonkeyPatch) -> No
     assert credentials_present(("X_API_KEY", "X_BEARER_TOKEN")) is False
 
 
-async def test_x_stub_is_not_configured_without_env(monkeypatch: pytest.MonkeyPatch) -> None:
+async def test_x_adapter_is_not_configured_without_env(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.delenv("X_API_KEY", raising=False)
     monkeypatch.delenv("X_BEARER_TOKEN", raising=False)
     outcome = await collect_isolated(XProvider(), ASSET, since_minutes=60, timeout_s=1.0)
     assert outcome.provider == "x"
+    assert outcome.error_class == "not_configured"
+
+
+async def test_reddit_adapter_is_not_configured_without_env(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("REDDIT_CLIENT_ID", raising=False)
+    monkeypatch.delenv("REDDIT_CLIENT_SECRET", raising=False)
+    monkeypatch.delenv("REDDIT_USER_AGENT", raising=False)
+    outcome = await collect_isolated(RedditProvider(), ASSET, since_minutes=60, timeout_s=1.0)
+    assert outcome.provider == "reddit"
     assert outcome.error_class == "not_configured"
 
 

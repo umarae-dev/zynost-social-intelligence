@@ -5,8 +5,8 @@
 > integrated into an existing **FastAPI + PostgreSQL + Redis + Celery** backend.
 > **Status of this folder:** Numbered design docs `00`–`21` are complete. Implementation has
 > started: package skeleton (`zynost_social/`), frozen types in `models.py` (doc 05),
-> provider isolation in `providers/base.py`, and the credential-gated X adapter
-> (`providers/x.py`, doc 06). Reddit, Telegram, and Discord fetch mapping are still stubs.
+> provider isolation in `providers/base.py`, and credential-gated X and Reddit adapters
+> (`providers/x.py`, `providers/reddit.py`, doc 06). Telegram and Discord fetch mapping are still stubs.
 
 This README is the **master index** for the project documentation. It does **not** contain the full
 detail of each topic — instead, each entry below describes *what that document must cover* and maps
@@ -310,7 +310,7 @@ Purpose: deliverables at completion.
 
 ## Next steps
 
-Implement remaining LLD modules **one slice at a time** (Reddit/Telegram/Discord adapters,
+Implement remaining LLD modules **one slice at a time** (Telegram/Discord adapters,
 matching, scoring, manipulation, aggregation, cache, contract). Do not invent mentions, do not add
 FastAPI/Celery/PostgreSQL, and do not use an LLM. This README is updated only if the overall
 structure or implementation status changes.
