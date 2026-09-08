@@ -207,7 +207,7 @@ JSON-safe floats named as spec §7 / `FR-MAN-02`: `duplicate_content_ratio`, `un
 | `classification` | classification enum | Asset-level label; `insufficient_data` when appropriate (`FR-SCOPE-02`). |
 | `sentiment_score` | `[-100, +100]` or omitted/null only when status cannot support a score | Combined tone of **available** evidence. |
 | `confidence` | `float` | Reduced when coverage is partial (`FR-AGG-04`). |
-| `social_heat`, `mention_velocity`, `organic_score`, `manipulation_risk`, `source_agreement` | `float` | Asset-level metrics (formulas → docs 09–11). |
+| `social_heat`, `mention_velocity`, `organic_score`, `manipulation_risk`, `source_agreement`, `source_disagreement` | `float` | Asset-level metrics (formulas → docs 09–11). `source_disagreement` is **MOM-09**; `m < 2` → `0`. |
 | `mention_count` | `int` | Combined asset-matched count. |
 | `sources` | `list[SourceBundle]` | Independent rows retained (`FR-AGG-01`). |
 | `anomalies` | `list` of JSON-safe records | Flagged patterns; not trade advice (`FR-MAN-04`). |

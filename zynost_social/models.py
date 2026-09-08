@@ -283,6 +283,7 @@ class AggregateResult:
     organic_score: float
     manipulation_risk: float
     source_agreement: float
+    source_disagreement: float = 0.0
     mention_count: int
     sentiment_score: float | None = None
     sources: tuple[SourceBundle, ...] = ()

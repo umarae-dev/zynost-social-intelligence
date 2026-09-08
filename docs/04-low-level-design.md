@@ -107,7 +107,7 @@ Internal (not public): construct the provider list, bound-concurrency gather, pa
 |---|---|
 | **Responsibility** | Combine available per-source bundles into one asset-level result; retain independent source rows; set `scope`; reduce confidence when coverage is partial; never treat a missing source as agreement (`FR-AGG-01`–`04`, `FR-MOM-05`). |
 | **Who calls it** | `engine.py` after per-source score + manipulation. |
-| **Interface** | `def aggregate(per_source: Sequence[SourceBundle], match_batch: MatchBatch, horizon: str) -> AggregateResult`. Each `SourceBundle` carries at least status, mention_count, unique_authors, sentiment_score, freshness_seconds, and `error_class` on failure (`FR-AGG-02`). Scope ∈ {`asset_specific`, `market_wide`}. Insufficient asset-specific evidence → `insufficient_data` where appropriate (`FR-SCOPE-02`). Detail → doc 11. |
+| **Interface** | `def aggregate(per_source, match_batch, horizon, *, scores=None, assessments=None, union_score=None, union_assessment=None) -> AggregateResult`. Attachments stay off `SourceBundle` (**AGG-02**). Each `SourceBundle` carries at least status, mention_count, unique_authors, sentiment_score, freshness_seconds, and `error_class` on failure (`FR-AGG-02`). Scope ∈ {`asset_specific`, `market_wide`}. Insufficient asset-specific evidence → `insufficient_data` where appropriate (`FR-SCOPE-02`). Detail → doc 11. |
 | **Must NOT** | Invent sources; hide failures; leak credentials/stack traces (`FR-AGG-03`); call providers. |
 
 ---

@@ -20,10 +20,15 @@ def aggregate(
     per_source: Sequence[SourceBundle],
     match_batch: MatchBatch,
     horizon: str,
+    *,
+    scores: Mapping[ProviderId, ScoreBundle] | None = None,
+    assessments: Mapping[ProviderId, ManipulationAssessment] | None = None,
+    union_score: ScoreBundle | None = None,
+    union_assessment: ManipulationAssessment | None = None,
 ) -> AggregateResult
 ```
 
-Engine-assembled **attachments** (not extra fields on `SourceBundle` — **MOD-01**): for each row, the `ScoreBundle` and `ManipulationAssessment` already computed for that provider, or `None` when `status = unavailable`. Optional concatenated `ScoreBundle` / `ManipulationAssessment` on the union of `match_batch.asset_mentions`.
+Engine-assembled **attachments** (not extra fields on `SourceBundle` — **MOD-01**): `scores` / `assessments` keyed by provider, omitted or `None` when `status = unavailable`. Optional concatenated `union_score` / `union_assessment` on the union of `match_batch.asset_mentions`.
 
 | | |
 |---|---|
@@ -212,6 +217,7 @@ Redis miss is not a missing source (doc 12 / **LLD-08**); it does not change \(A
 | `confidence` | **AGG-13** |
 | `social_heat`, `mention_velocity`, `organic_score`, `manipulation_risk` | §5 (consume **MOM-** / **MAN-** values) |
 | `source_agreement` | **AGG-09** / **MOM-09** |
+| `source_disagreement` | **AGG-09** / **MOM-09** (`1 - agreement`; `0` if \(m < 2\)) |
 | `mention_count` | \(N_a\) |
 | `sources` | Full `per_source` list, unmodified except that attachments are not serialized on the row (`FR-AGG-01`) |
 | `anomalies` | **AGG-15** |
