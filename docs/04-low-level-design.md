@@ -140,7 +140,7 @@ Internal (not public): construct the provider list, bound-concurrency gather, pa
 |---|---|
 | **Responsibility** | `data_quality` metrics: at least `provider_coverage`, `freshness_score`, `asset_match_score`, `organic_data_ratio` (`FR-PROV-01`). Partial coverage lowers confidence in concert with aggregation (`FR-AGG-04`). |
 | **Who calls it** | `engine.py` (may take `ProvenanceRecord` + `ManipulationAssessment` + `AggregateResult`). |
-| **Interface** | `def compute_data_quality(...) -> DataQuality`. Numeric scales and the full contract object → doc 14. |
+| **Interface** | `def compute_data_quality(provenance, match_batch, aggregate, assessment) -> DataQuality`. Coverage is \(A/P_{\mathrm{reg}}\) with frozen \(P_{\mathrm{reg}}=4\) (**QLY-01**, **QLY-05**); freshness from stored \(\tau\) vs \(T_{\mathrm{sat}}=3600\,\mathrm{s}\) (**QLY-02**); organic ratio only when \(N_a \ge 1\) and \(A \ge 1\) (**QLY-04**). Detail → doc 14. |
 | **Must NOT** | Fetch, score sentiment, or invent organic ratio when mentions were unavailable. |
 
 ---
