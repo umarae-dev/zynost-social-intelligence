@@ -3,8 +3,9 @@
 > **Repository (planned):** `zynost-social-intelligence`
 > **Nature:** Standalone, private Python module (Python 3.12+, async-first) that will later be
 > integrated into an existing **FastAPI + PostgreSQL + Redis + Celery** backend.
-> **Status of this folder:** Documentation-first. No engine code is written yet. We design and
-> document each concern before implementing it, section by section.
+> **Status of this folder:** Numbered design docs `00`–`21` are complete. Implementation has
+> started: package skeleton (`zynost_social/`) and frozen types in `models.py` (doc 05).
+> Remaining modules are typed stubs until their owning docs are coded.
 
 This README is the **master index** for the project documentation. It does **not** contain the full
 detail of each topic — instead, each entry below describes *what that document must cover* and maps
@@ -308,5 +309,7 @@ Purpose: deliverables at completion.
 
 ## Next steps
 
-We build the numbered documents **one at a time**, starting from `00-project-vision.md`, discussing and
-learning each concern before moving on. This README is updated only if the overall structure changes.
+Implement remaining LLD modules **one slice at a time** (provider isolation and gated adapters,
+matching, scoring, manipulation, aggregation, cache, contract). Do not invent mentions, do not
+add FastAPI/Celery/PostgreSQL, and do not use an LLM. This README is updated only if the overall
+structure or implementation status changes.

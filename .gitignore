@@ -4,3 +4,20 @@
 # Source specification (keep local; do not publish)
 *.pdf
 
+# Secrets (commit only .env.example)
+.env
+.env.*
+!.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
