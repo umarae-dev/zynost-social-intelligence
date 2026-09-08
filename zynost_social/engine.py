@@ -39,6 +39,7 @@ from zynost_social.models import (
     Scope,
     ScoreBundle,
     SocialMention,
+    SocialSentimentSnapshot,
     SourceBundle,
 )
 from zynost_social.provenance import PROVIDER_ORDER, build_provenance
@@ -47,7 +48,7 @@ from zynost_social.providers.discord import DiscordProvider
 from zynost_social.providers.reddit import RedditProvider
 from zynost_social.providers.telegram import TelegramProvider
 from zynost_social.providers.x import XProvider
-from zynost_social.quality import compute_data_quality
+from zynost_social.quality import P_REG, compute_data_quality
 from zynost_social.scoring import LOOKBACK_MINUTES, score
 
 NAME: Final = "social_sentiment"
@@ -171,6 +172,71 @@ async def build_social_sentiment(
         requested=requested,
         applied=applied,
         available=available,
+    )
+
+
+def project_snapshot(
+    result: Mapping[str, object],
+    *,
+    asset_id: str,
+) -> SocialSentimentSnapshot | None:
+    """Pure adapter over a contract dict (SNP-02). ``asset_id`` is keyword-only
+    because INT forbids adding it to the result. No I/O, no Redis, no clock.
+    """
+    if result.get("status") == "unavailable":
+        return None
+    observed = _parse_iso(result.get("observed_at"))
+    sentiment = _optional_float(result.get("sentiment_score"))
+    if observed is None or sentiment is None:
+        return None
+    quality = result.get("data_quality")
+    coverage = 0.0
+    observation_count = 0
+    if isinstance(quality, Mapping):
+        coverage = _finite_or(quality.get("provider_coverage"), 0.0)
+        observation_count = _int_or(quality.get("observation_count"), 0)
+    if coverage <= 0.0:
+        return None
+    metrics = result.get("metrics")
+    mention_count = observation_count
+    if isinstance(metrics, Mapping) and "mention_count" in metrics:
+        mention_count = _int_or(metrics.get("mention_count"), observation_count)
+    return SocialSentimentSnapshot(
+        asset_id=asset_id,
+        observed_at=observed,
+        sentiment_score=sentiment,
+        social_heat=_finite_or(result.get("social_heat"), 0.0),
+        mention_count=mention_count,
+        mention_velocity=_finite_or(result.get("mention_velocity"), 0.0),
+        organic_score=_finite_or(result.get("organic_score"), 0.0),
+        manipulation_risk=_finite_or(result.get("manipulation_risk"), 0.0),
+        source_coverage=max(0.0, min(1.0, coverage)),
+        source_agreement=_finite_or(result.get("source_agreement"), 0.0),
+        classification=_classification(result.get("classification")),
+    )
+
+
+def _project_snapshot(
+    aggregate: AggregateResult,
+    asset_id: str,
+    observed_at: datetime,
+) -> SocialSentimentSnapshot | None:
+    """Canonical projection from computed state (SNP-02, SNP-04)."""
+    available = sum(1 for row in aggregate.sources if row.status == "available")
+    if available == 0 or aggregate.sentiment_score is None:
+        return None
+    return SocialSentimentSnapshot(
+        asset_id=asset_id,
+        observed_at=observed_at,
+        sentiment_score=aggregate.sentiment_score,
+        social_heat=aggregate.social_heat,
+        mention_count=aggregate.mention_count,
+        mention_velocity=aggregate.mention_velocity,
+        organic_score=aggregate.organic_score,
+        manipulation_risk=aggregate.manipulation_risk,
+        source_coverage=available / P_REG,
+        source_agreement=aggregate.source_agreement,
+        classification=aggregate.classification,
     )
 
 
@@ -678,6 +744,18 @@ def _classification(value: object) -> Classification:
 
 def _iso(value: datetime) -> str:
     return value.astimezone(UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _parse_iso(value: object) -> datetime | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None or parsed.utcoffset() is None:
+        return None
+    return parsed.astimezone(UTC)
 
 
 def _finite_or(value: object, default: float) -> float:

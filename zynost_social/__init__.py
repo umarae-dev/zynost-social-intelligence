@@ -1,6 +1,11 @@
-"""Public package surface: one async entry point (FR-INT-01)."""
+"""Public package surface: async contract plus pure snapshot projection."""
 
-from zynost_social.engine import build_social_sentiment
-from zynost_social.models import AssetIdentity
+from zynost_social.engine import build_social_sentiment, project_snapshot
+from zynost_social.models import AssetIdentity, SocialSentimentSnapshot
 
-__all__ = ["AssetIdentity", "build_social_sentiment"]
+__all__ = [
+    "AssetIdentity",
+    "SocialSentimentSnapshot",
+    "build_social_sentiment",
+    "project_snapshot",
+]

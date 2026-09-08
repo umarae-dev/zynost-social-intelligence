@@ -68,10 +68,11 @@ def _project_snapshot(
 ) -> SocialSentimentSnapshot | None    # None when the run is not projectable (SNP-04)
 
 # public, pure, synchronous: the same projection over the returned contract dict
-def project_snapshot(result: dict) -> SocialSentimentSnapshot | None
+# `asset_id` is keyword-only: INT forbids adding it to the contract dict.
+def project_snapshot(result: dict, *, asset_id: str) -> SocialSentimentSnapshot | None
 ```
 
-The type itself lives in `models.py` (**MOD-01**); only the projection logic lives here. The public form is a **pure adapter over the dict the entry point already returned** — it is not a second orchestration path, is not async, and never triggers a run. `FR-INT-01`'s "one public async entry point" (**LLD-04**) is therefore unchanged.
+The type itself lives in `models.py` (**MOD-01**); only the projection logic lives here. The public form is a **pure adapter over the dict the entry point already returned** plus the run's `asset_id` (the contract cannot carry `asset_id` — **INT-07**). It is not a second orchestration path, is not async, and never triggers a run. `FR-INT-01`'s "one public async entry point" (**LLD-04**) is therefore unchanged.
 
 **Equivalence is required:** for any run, both forms MUST yield the identical snapshot (or identically `None`). If they could diverge, a consumer persisting from the dict would be storing a different history than the engine believes it observed.
 

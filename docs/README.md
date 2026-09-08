@@ -14,7 +14,8 @@
 > fail-soft Redis cache in `cache.py` (doc 12),
 > honest run provenance in `provenance.py` (doc 14),
 > `data_quality` scales in `quality.py` (doc 14), and
-> the public `build_social_sentiment` orchestrator in `engine.py` (doc 14).
+> the public `build_social_sentiment` orchestrator in `engine.py` (doc 14), and
+> snapshot projection (`project_snapshot`, doc 13).
 
 This README is the **master index** for the project documentation. It does **not** contain the full
 detail of each topic — instead, each entry below describes *what that document must cover* and maps
@@ -318,8 +319,8 @@ Purpose: deliverables at completion.
 
 ## Next steps
 
-Remaining work: snapshot projection (doc 13), remaining contract/LLM-scan
-tests, root `README`, `examples/example_result.json`, then `HANDOFF.md`.
+Remaining work: remaining contract/LLM-scan/secrets tests, root
+`README.md`, `examples/example_result.json`, then `HANDOFF.md`.
 Do not invent mentions, do not add
 FastAPI/Celery/PostgreSQL, and do not use an LLM. This README is updated only if the overall
 structure or implementation status changes.

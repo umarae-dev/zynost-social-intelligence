@@ -196,7 +196,8 @@ consumer
         ├─ provenance.build_provenance
         ├─ quality.compute_data_quality
         ├─ cache set (best-effort)
-        └─ dict  (shape → doc 14; snapshot projection → doc 13)
+        ├─ project_snapshot / _project_snapshot   # beside the dict (doc 13)
+        └─ dict  (shape → doc 14)
 ```
 
 ---
