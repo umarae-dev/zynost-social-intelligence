@@ -27,7 +27,7 @@ Pipeline position (**HLD** data flow): providers emit `SocialMention` → matchi
 | Fail-soft enums | Fetch `status` ∈ {`available`, `unavailable`}. Safe `error_class` values below. Empty mention list is **not** unavailable. | **LLD-02**, **HLD-07**, `CON-06` |
 | No trade language | No field, enum, or example MAY be `BUY` / `SELL` / `LONG` / `SHORT`. Positive scores are crowd tone, not price direction. | `FR-INT-04`, `FR-SENT-06`, `CON-04` |
 
-**MOD-02 — Closed `error_class` (safe).** On unavailability, `error_class` is one of: `not_configured`, `unauthorized`, `timeout`, `malformed`. Additional **safe** classes MAY be added later without leaking raw API bodies, tokens, or stack traces (`FR-SRC-06`, `FR-AGG-03`, **HLD-10**, **LLD-07**).
+**MOD-02 — Closed `error_class` (safe).** On unavailability, `error_class` is one of: `not_configured`, `unauthorized`, `timeout`, `malformed`, `rate_limited`. Additional **safe** classes MAY be added later without leaking raw API bodies, tokens, or stack traces (`FR-SRC-06`, `FR-AGG-03`, **HLD-10**, **LLD-07**, **SEC-08**).
 
 **MOD-03 — Closed classification.** Sentiment `classification` is exactly: `strong_positive`, `positive`, `neutral`, `mixed`, `negative`, `strong_negative`, `insufficient_data` (`FR-SENT-03`). No other labels.
 
@@ -252,7 +252,7 @@ Fixed contract identity (`name = social_sentiment`, `role = context`, `source_cl
 | ID | Decision |
 |----|----------|
 | **MOD-01** | `models.py` is the single owner of these field names. |
-| **MOD-02** | Safe `error_class`: `not_configured`, `unauthorized`, `timeout`, `malformed` (+ later safe classes only). |
+| **MOD-02** | Safe `error_class`: `not_configured`, `unauthorized`, `timeout`, `malformed`, `rate_limited` (+ later safe classes only). |
 | **MOD-03** | Classification is a closed seven-label set including `insufficient_data`. |
 | **MOD-04** | `AssetIdentity` is never ticker-only; `asset_id` + `name` + `symbol` required. |
 | **MOD-05** | `provider` closed set: `x`, `reddit`, `telegram`, `discord`. |

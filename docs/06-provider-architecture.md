@@ -30,6 +30,9 @@ Every adapter implements the same interface and nothing else as its public fetch
 
 ```python
 class SocialProvider:
+    provider: ProviderId  # identity on ProviderFetchOutcome; not inferred from type
+    credential_names: tuple[str, ...]  # CFG-03 set; empty means no env gate (tests)
+
     async def fetch_mentions(
         self,
         asset: AssetIdentity,
@@ -37,6 +40,8 @@ class SocialProvider:
     ) -> list[SocialMention]: ...
 ```
 
+- `provider` is the frozen source id (`x` / `reddit` / `telegram` / `discord`). Isolation copies it onto `ProviderFetchOutcome`; adapters MUST NOT smuggle status via instance flags (**LLD-02**).
+- `credential_names` is the CFG-03 presence set. `collect_isolated` calls `credentials_present` **before** `fetch_mentions`; missing/blank → `not_configured` and **no** network (**SEC-03**). Adapters signal `unauthorized` / `malformed` / `rate_limited` by raising `ProviderError(error_class)` — only isolation maps that to status (**PRV-03**).
 - `asset` is the canonical identity from doc 05 — adapters use it for query construction (handles, subreddits, channel ids, contract address where relevant), never as a bare ticker string (`FR-ID-02`).
 - `since_minutes` is the lookback window the engine derives from the horizon (**HLD-04**; exact windows → doc 15). Adapters do not choose their own window.
 - Return value is **normalized** `SocialMention` records only (`FR-NORM-01`). Raw provider JSON, HTML, or SDK objects never leave the adapter — mapping happens inside `fetch_mentions` before it returns (**HLD-02**).

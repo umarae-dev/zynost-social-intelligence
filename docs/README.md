@@ -4,8 +4,9 @@
 > **Nature:** Standalone, private Python module (Python 3.12+, async-first) that will later be
 > integrated into an existing **FastAPI + PostgreSQL + Redis + Celery** backend.
 > **Status of this folder:** Numbered design docs `00`–`21` are complete. Implementation has
-> started: package skeleton (`zynost_social/`) and frozen types in `models.py` (doc 05).
-> Remaining modules are typed stubs until their owning docs are coded.
+> started: package skeleton (`zynost_social/`), frozen types in `models.py` (doc 05), and
+> provider isolation in `providers/base.py` (`collect_isolated`, credential gate, shared
+> helpers). Concrete adapters are still gated stubs until their fetch mapping is coded.
 
 This README is the **master index** for the project documentation. It does **not** contain the full
 detail of each topic — instead, each entry below describes *what that document must cover* and maps
@@ -309,7 +310,7 @@ Purpose: deliverables at completion.
 
 ## Next steps
 
-Implement remaining LLD modules **one slice at a time** (provider isolation and gated adapters,
-matching, scoring, manipulation, aggregation, cache, contract). Do not invent mentions, do not
-add FastAPI/Celery/PostgreSQL, and do not use an LLM. This README is updated only if the overall
+Implement remaining LLD modules **one slice at a time** (gated real adapters, matching, scoring,
+manipulation, aggregation, cache, contract). Do not invent mentions, do not add
+FastAPI/Celery/PostgreSQL, and do not use an LLM. This README is updated only if the overall
 structure or implementation status changes.

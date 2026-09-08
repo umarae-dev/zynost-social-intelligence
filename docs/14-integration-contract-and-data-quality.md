@@ -203,7 +203,7 @@ Each value:
 | `unique_authors` | int `≥ 0` | `0` when unavailable or quiet |
 | `sentiment_score` | number \| `null` | `null` when unavailable — never fabricated (**AGG-04**) |
 | `freshness_seconds` | number \| `null` | fetch/collection age relative to \(t_0\); on cache-served raw/aggregate, age of **that observation**, not of the read (**CCH-17**) |
-| `error_class` | string \| `null` | `null` when available. When unavailable: **MOD-02** only (`not_configured`, `unauthorized`, `timeout`, `malformed`, plus later **safe** classes) |
+| `error_class` | string \| `null` | `null` when available. When unavailable: **MOD-02** only (`not_configured`, `unauthorized`, `timeout`, `malformed`, `rate_limited`, plus later **safe** classes) |
 
 **INT-10 — Redaction.** `sources` MUST NEVER contain credentials, tokens, stack traces, exception `str()`, raw API bodies, or provider error text (`FR-AGG-03`, `FR-SRC-06`, **AGG-06**, `NFR-SEC-04`).
 

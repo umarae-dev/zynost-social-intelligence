@@ -52,7 +52,7 @@ Each `SourceBundle` exposes at least (`FR-AGG-02`): `status`, `mention_count`, `
 
 **AGG-05 — Empty available ≠ unavailable.** `available` + `mention_count = 0` is a successful quiet fetch (**LLD-02**, **MOD-08**). It is a retained row and counts toward coverage \(A\) (§6). It is **not** a **MOM-09** vote and does not invent a tone.
 
-**AGG-06 — Redaction.** Rows and the aggregate MAY carry `error_class` ∈ {`not_configured`, `unauthorized`, `timeout`, `malformed`} (plus later **safe** classes). They MUST NEVER carry credentials, tokens, stack traces, exception `str()`, or raw API bodies (`FR-AGG-03`, `FR-SRC-06`, **MOD-02**, **HLD-10**).
+**AGG-06 — Redaction.** Rows and the aggregate MAY carry `error_class` ∈ {`not_configured`, `unauthorized`, `timeout`, `malformed`, `rate_limited`} (plus later **safe** classes). They MUST NEVER carry credentials, tokens, stack traces, exception `str()`, or raw API bodies (`FR-AGG-03`, `FR-SRC-06`, **MOD-02**, **HLD-10**).
 
 `match_batch` is the matching partition for this run: `asset_mentions` (only scored evidence), `market_wide` (leftovers), `asset_match_score` (for doc 14 — unused here).
 

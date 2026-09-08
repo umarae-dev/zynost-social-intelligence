@@ -10,7 +10,7 @@ from typing import Literal
 
 ProviderId = Literal["x", "reddit", "telegram", "discord"]
 FetchStatus = Literal["available", "unavailable"]
-ErrorClass = Literal["not_configured", "unauthorized", "timeout", "malformed"]
+ErrorClass = Literal["not_configured", "unauthorized", "timeout", "malformed", "rate_limited"]
 Classification = Literal[
     "strong_positive",
     "positive",
