@@ -10,8 +10,9 @@
 > `providers/discord.py`, doc 06), asset matching in `matching.py` (doc 07),
 > deterministic polar + momentum scoring in `scoring.py` (docs 08, 09, 15),
 > manipulation / organic-quality assessment in `manipulation.py` (doc 10),
-> per-source aggregation / scope in `aggregation.py` (doc 11), and
-> fail-soft Redis cache in `cache.py` (doc 12).
+> per-source aggregation / scope in `aggregation.py` (doc 11),
+> fail-soft Redis cache in `cache.py` (doc 12), and
+> honest run provenance in `provenance.py` (doc 14).
 
 This README is the **master index** for the project documentation. It does **not** contain the full
 detail of each topic — instead, each entry below describes *what that document must cover* and maps
@@ -315,7 +316,7 @@ Purpose: deliverables at completion.
 
 ## Next steps
 
-Implement remaining LLD modules **one slice at a time** (provenance/quality,
+Implement remaining LLD modules **one slice at a time** (`quality.py`,
 then the `engine.py` contract). Do not invent mentions, do not add
 FastAPI/Celery/PostgreSQL, and do not use an LLM. This README is updated only if the overall
 structure or implementation status changes.

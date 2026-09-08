@@ -129,7 +129,7 @@ Internal (not public): construct the provider list, bound-concurrency gather, pa
 |---|---|
 | **Responsibility** | Honest “what happened” for the run: which providers responded or failed, observation counts, duplicate-filtering impact, freshness (`FR-PROV-02`–`03`). Safe `error_class` only (`FR-SRC-06`). |
 | **Who calls it** | `engine.py` when assembling the contract. |
-| **Interface** | `def build_provenance(outcomes: Sequence[ProviderFetchOutcome], match_batch: MatchBatch, aggregate: AggregateResult) -> ProvenanceRecord`. |
+| **Interface** | `def build_provenance(outcomes, match_batch, aggregate, *, served_from_cache, observed_at, duplicate_content_ratio=None) -> ProvenanceRecord`. Keyword `duplicate_content_ratio` is the **MAN-04** scalar (live assessment or cache envelope); `observed_at` is collection \(t_0\) for the caller and is not used to recompute freshness. Detail → doc 14. |
 | **Must NOT** | Claim coverage the evidence does not support; include secrets or raw API error bodies (`NFR-SEC-04`). |
 
 ---

@@ -226,7 +226,7 @@ When \(A = 0\): `anomalies = []`.
 ## 9. Provenance vs quality vs engine
 
 ```
-provenance.build_provenance(outcomes, match_batch, aggregate, *, served_from_cache, observed_at)
+provenance.build_provenance(outcomes, match_batch, aggregate, *, served_from_cache, observed_at, duplicate_content_ratio=None)
     -> ProvenanceRecord          # diary: who answered, counts, duplicate impact, freshness τ
 
 quality.compute_data_quality(provenance, match_batch, aggregate, assessment)
@@ -245,7 +245,7 @@ Both helpers are **pure** (`NFR-DET-01`, **HLD-03**, **MOD-09**): no Redis, no n
 | `providers_unavailable` | `list[str]` | the rest of \(P_{\mathrm{reg}}\) |
 | `observation_count` | int | \(N_a\) — asset-matched mentions that informed the result |
 | `unique_authors` | int | **AGG-12** |
-| `duplicate_content_ratio` | float \| `null` | concatenated (or union) **MAN-04** when \(N_a \ge 1\); `null` when \(N_a = 0\) (no filter was applied) |
+| `duplicate_content_ratio` | float \| `null` | concatenated (or union) **MAN-04** when \(N_a \ge 1\); `null` when \(N_a = 0\) (no filter was applied). Copied from the keyword argument (live `ManipulationAssessment` or cache-envelope scalar); never recomputed here |
 | `freshness_seconds` | float \| `null` | \(\tau\) = **max** of non-null `SourceBundle.freshness_seconds` over **available** rows (worst live lag). `null` if \(A = 0\) or every available row has `null` |
 | `served_from_cache` | bool | `true` only for an **aggregate** cache hit. A Redis **miss** is `false` and is not a provider outcome (**CCH-13**) |
 | `asset_match_score` | float | copy of `MatchBatch.asset_match_score` already on **QLY-03** scale |
