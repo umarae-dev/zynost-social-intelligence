@@ -28,6 +28,7 @@ from zynost_social.providers.base import (
     validate_body_size,
 )
 from zynost_social.providers.reddit import RedditProvider
+from zynost_social.providers.telegram import TelegramProvider
 from zynost_social.providers.x import XProvider
 
 ASSET = AssetIdentity(asset_id="btc", symbol="BTC", name="Bitcoin")
@@ -213,6 +214,16 @@ async def test_reddit_adapter_is_not_configured_without_env(
     monkeypatch.delenv("REDDIT_USER_AGENT", raising=False)
     outcome = await collect_isolated(RedditProvider(), ASSET, since_minutes=60, timeout_s=1.0)
     assert outcome.provider == "reddit"
+    assert outcome.error_class == "not_configured"
+
+
+async def test_telegram_adapter_is_not_configured_without_env(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("TELEGRAM_API_ID", raising=False)
+    monkeypatch.delenv("TELEGRAM_API_HASH", raising=False)
+    outcome = await collect_isolated(TelegramProvider(), ASSET, since_minutes=60, timeout_s=1.0)
+    assert outcome.provider == "telegram"
     assert outcome.error_class == "not_configured"
 
 
