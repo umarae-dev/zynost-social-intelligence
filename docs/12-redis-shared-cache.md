@@ -215,6 +215,7 @@ Async get/set parameterized by **purpose** and `asset_id` (**LLD** `cache.py` in
 
 ```python
 CacheContext            # per-run: client handle + `disabled` flag (CCH-01, CCH-12)
+RawCacheHit             # mentions + envelope since_minutes / observed_at / provider
 
 async def get_aggregate(ctx, asset_id: str, horizon: str) -> dict | None
 async def set_aggregate(ctx, asset_id: str, horizon: str, aggregate: dict) -> None
@@ -223,12 +224,16 @@ async def get_baselines(ctx, asset_id: str) -> dict[str, dict]      # absent win
 async def set_baselines(ctx, asset_id: str, records: dict[str, dict]) -> None
 
 async def get_raw(ctx, asset_id: str, provider: str, since_minutes: int
-                  ) -> list[SocialMention] | None                    # CCH-07 validation inside
+                  ) -> RawCacheHit | None                            # CCH-07 validation inside
 async def set_raw(ctx, asset_id: str, provider: str, since_minutes: int,
-                  mentions: Sequence[SocialMention]) -> None
+                  mentions: Sequence[SocialMention], *, observed_at: datetime) -> None
+
+async def get_lookaside(ctx, asset_id: str) -> tuple[raw_envelopes, baseline_records]  # one MGET
+async def set_raw_many(...)                                          # one pipeline
+async def set_compute(..., *, available_providers: int) -> None      # aggregate + baselines; CCH-15
 ```
 
-`None` / an absent window means **miss** — never a zero-filled substitute (**CCH-14**). The `set_*` functions return `None` on success *and* on skip: callers must not branch on cache-write success (**CCH-15**).
+`None` / an absent window means **miss** — never a zero-filled substitute (**CCH-14**). The `set_*` functions return `None` on success *and* on skip: callers must not branch on cache-write success (**CCH-15**). `set_raw` takes collection `observed_at` so freshness is not wall-clock (**CCH-07**, **CCH-17**). `get_raw` returns `RawCacheHit` so that instant is not lost. `set_compute` writes baselines only when `available_providers >= 1`.
 
 ---
 

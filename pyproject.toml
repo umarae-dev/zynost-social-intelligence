@@ -9,6 +9,7 @@ description = "Standalone crypto social intelligence context engine (not a tradi
 requires-python = ">=3.12"
 dependencies = [
     "httpx>=0.27",
+    "redis>=5.0",
 ]
 
 [project.optional-dependencies]
