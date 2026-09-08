@@ -150,6 +150,12 @@ To avoid duplicated logic across `x.py` / `reddit.py` / `telegram.py` / `discord
 
 **PRV-T-02 — Public channels only; reactions; no scrape.** Fetch is limited to `official_telegram` public channel usernames (`@name`, `t.me/name`, `t.me/s/name`). Invite links (`joinchat`, `t.me/+…`), `t.me/c/…` private ids, groups, supergroups, and private chats are dropped — the adapter never joins or scrapes. At most **4** distinct channels. Each verified with `getChat`; `type` must be `channel` with a username. `chat not found` / other 4xx on `getChat` skips that channel, not the whole fetch. Then `getUpdates` (`timeout=0`, `limit=100`, `allowed_updates=["channel_post"]`) supplies posts; only `channel_post` items whose chat username is in the verified set are mapped. No official public channels → `getMe` then `[]` (quiet success; there is no global HTTP search, so the adapter does not invent a ticker crawl). Lookback is `now − since_minutes` clamped to `[1, 7×24×60]` minutes; older `date` values are skipped. Engagement = sum of `reactions.results[].count`; missing or non-finite → `0` (views are not used). Author is hashed from `from.id` or else `chat.id`; URL `https://t.me/<username>/<message_id>` is hashed (**SEC-11**). Channel username may be stored in `metadata`. Incomplete updates inside a valid envelope are skipped, not a whole-fetch `malformed`.
 
+### Discord (`providers/discord.py`)
+
+**PRV-D-01 — Bot HTTP API, credential-gated.** Discord REST is `GET https://discord.com/api/v10/…` with `Authorization: Bot …` from `DISCORD_BOT_TOKEN` (**CFG-03**). Missing/blank → `not_configured` before any GET. HTTP 401/403 on token validation (`/users/@me`) → `unauthorized`; 429 → `rate_limited` (no retry); 502–504 → `TransientProviderError` for **SEC-08**; other 4xx on `@me` or a whole-fetch messages envelope → `malformed`. HTTP is injected (`HttpGetter`) so tests never open a socket (**TST-01**). Default transport is `httpx`. Every fetch starts with `/users/@me` to validate the token.
+
+**PRV-D-02 — Authorized guild channels only; reactions; no scrape.** Fetch is limited to `official_discord` channel snowflakes or `discord.com/channels/{guild}/{channel}` URLs. Invite links (`discord.gg`, `/invite/`), DM paths (`/channels/@me/…`), and guild-wide crawls are dropped — the adapter never joins, lists a guild, or scrapes unauthorized surfaces. At most **4** distinct channels. Each verified with `GET /channels/{id}`; `type` must be guild text (`0`) or announcement (`5`) with a `guild_id`. `403`/`404`/other channel-level 4xx (except `401`/`429`) skips that channel, not the whole fetch. Then `GET /channels/{id}/messages` (`limit=100`) supplies messages. No official authorized channels → `/users/@me` then `[]` (quiet success; there is no global HTTP search, so the adapter does not invent a ticker crawl). Lookback is `now − since_minutes` clamped to `[1, 7×24×60]` minutes; older `timestamp` values are skipped. Engagement = sum of `reactions[].count`; missing or non-finite → `0`. Author is hashed from `author.id`; URL `https://discord.com/channels/{guild}/{channel}/{message}` is hashed (**SEC-11**). Channel/guild ids may be stored in `metadata`. Incomplete messages inside a valid array are skipped, not a whole-fetch `malformed`.
+
 ---
 
 ## 9. Decision index
@@ -169,6 +175,8 @@ To avoid duplicated logic across `x.py` / `reddit.py` / `telegram.py` / `discord
 | **PRV-R-02** | Multi-signal query (never ticker-only); post listings only; score engagement; hashed author/permalink; skip old/bad items. |
 | **PRV-T-01** | Telegram Bot HTTP API via path token; numeric `TELEGRAM_API_ID` gate; injectable HTTP; status mapping as **PRV-05** / **SEC-08**. |
 | **PRV-T-02** | Official public channels only (no invites/groups/scrape); reaction-count engagement; hashed author/URL; skip old/bad items. |
+| **PRV-D-01** | Discord Bot HTTP API via bearer-style `Bot` token; injectable HTTP; status mapping as **PRV-05** / **SEC-08**. |
+| **PRV-D-02** | Official authorized guild channels only (no invites/DMs/guild crawl); reaction-count engagement; hashed author/URL; skip old/bad items. |
 
 ---
 

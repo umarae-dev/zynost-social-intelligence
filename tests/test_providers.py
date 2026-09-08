@@ -27,6 +27,7 @@ from zynost_social.providers.base import (
     sanitize_text,
     validate_body_size,
 )
+from zynost_social.providers.discord import DiscordProvider
 from zynost_social.providers.reddit import RedditProvider
 from zynost_social.providers.telegram import TelegramProvider
 from zynost_social.providers.x import XProvider
@@ -224,6 +225,15 @@ async def test_telegram_adapter_is_not_configured_without_env(
     monkeypatch.delenv("TELEGRAM_API_HASH", raising=False)
     outcome = await collect_isolated(TelegramProvider(), ASSET, since_minutes=60, timeout_s=1.0)
     assert outcome.provider == "telegram"
+    assert outcome.error_class == "not_configured"
+
+
+async def test_discord_adapter_is_not_configured_without_env(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.delenv("DISCORD_BOT_TOKEN", raising=False)
+    outcome = await collect_isolated(DiscordProvider(), ASSET, since_minutes=60, timeout_s=1.0)
+    assert outcome.provider == "discord"
     assert outcome.error_class == "not_configured"
 
 

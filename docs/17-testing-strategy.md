@@ -70,7 +70,7 @@ Fake adapters implement `SocialProvider.fetch_mentions`. Production adapter **co
 | **TST-P-16** | Missing credentials | no network; `not_configured` | **SEC-03**, **HLD-10** |
 | **TST-P-17** | Present-but-rejected creds | `unauthorized` | **PRV-05** |
 
-Discord **success** is not in the spec’s minimum list; if the adapter can be driven with a canned authorized payload, add it — it MUST NOT be required to pass CI via a live bot.
+Discord **success** is covered with canned authorized payloads (`tests/test_discord_provider.py`). It MUST NOT be required to pass CI via a live bot (**TST-01**).
 
 ---
 
