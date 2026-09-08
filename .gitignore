@@ -1,0 +1,6 @@
+# Local-only Cursor skills (never commit / never ship to production)
+.cursor/skills/
+
+# Source specification (keep local; do not publish)
+*.pdf
+
