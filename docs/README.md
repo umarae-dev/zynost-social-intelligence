@@ -17,7 +17,7 @@
 > the public `build_social_sentiment` orchestrator in `engine.py` (doc 14), and
 > snapshot projection (`project_snapshot`, doc 13), and
 > LLM-free / secrets-hygiene scans (`tests/test_llm_free.py`, `tests/test_secrets_hygiene.py`,
-> doc 17).
+> doc 17), and root `README.md` (DOD-14).
 
 This README is the **master index** for the project documentation. It does **not** contain the full
 detail of each topic — instead, each entry below describes *what that document must cover* and maps
@@ -321,8 +321,7 @@ Purpose: deliverables at completion.
 
 ## Next steps
 
-Remaining work: root `README.md`, `examples/example_result.json`, then
-`HANDOFF.md`.
+Remaining work: `examples/example_result.json`, then `HANDOFF.md`.
 Do not invent mentions, do not add
 FastAPI/Celery/PostgreSQL, and do not use an LLM. This README is updated only if the overall
 structure or implementation status changes.
