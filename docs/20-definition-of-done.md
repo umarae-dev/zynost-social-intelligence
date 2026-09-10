@@ -75,6 +75,6 @@ Docs `00`–`19` remaining consistent with the code is expected at handoff (doc 
 
 | Topic | Owner |
 |-------|--------|
-| `HANDOFF.md` contents, example JSON, push checklist | doc 21 |
+| Clean commit / private standalone push | doc 21 (**HAN-02**, **HAN-03**) |
 | Test implementation details | doc 17 |
 | README prose itself | written at implementation; quality judged by **DOD-14** |

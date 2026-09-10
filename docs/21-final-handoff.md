@@ -127,6 +127,6 @@ The auditor uses this repo in isolation. Integrators later call `build_social_se
 
 | Topic | Owner |
 |-------|--------|
-| Filling `HANDOFF.md` / `examples/example_result.json` on disk | implementation, when **DOD-00** holds |
+| Clean commit / private standalone push | operator (**HAN-02**, **HAN-03**) |
 | DoD evidence rows | doc 20 |
 | Consumer integration | **HLD-09** |

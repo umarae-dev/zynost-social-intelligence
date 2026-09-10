@@ -139,5 +139,5 @@ The suite includes an LLM-import scan and a secrets-hygiene scan.
 
 ## Docs
 
-Start at [`docs/README.md`](docs/README.md). Integration contract: `docs/14`. Security and
-env catalog: `docs/16`, `docs/18`.
+Start at [`docs/README.md`](docs/README.md). Auditor packing list: [`HANDOFF.md`](HANDOFF.md).
+Integration contract: `docs/14`. Security and env catalog: `docs/16`, `docs/18`.

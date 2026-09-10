@@ -3,22 +3,23 @@
 > **Repository (planned):** `zynost-social-intelligence`
 > **Nature:** Standalone, private Python module (Python 3.12+, async-first) that will later be
 > integrated into an existing **FastAPI + PostgreSQL + Redis + Celery** backend.
-> **Status of this folder:** Numbered design docs `00`–`21` are complete. Implementation has
-> started: package skeleton (`zynost_social/`), frozen types in `models.py` (doc 05),
-> provider isolation in `providers/base.py`, credential-gated X, Reddit, Telegram, and
+> **Status of this folder:** Numbered design docs `00`–`21` are complete. Implementation of
+> the module is complete: package (`zynost_social/`), frozen types (`models.py`, doc 05),
+> provider isolation (`providers/base.py`), credential-gated X, Reddit, Telegram, and
 > Discord adapters (`providers/x.py`, `providers/reddit.py`, `providers/telegram.py`,
-> `providers/discord.py`, doc 06), asset matching in `matching.py` (doc 07),
-> deterministic polar + momentum scoring in `scoring.py` (docs 08, 09, 15),
-> manipulation / organic-quality assessment in `manipulation.py` (doc 10),
-> per-source aggregation / scope in `aggregation.py` (doc 11),
-> fail-soft Redis cache in `cache.py` (doc 12),
-> honest run provenance in `provenance.py` (doc 14),
-> `data_quality` scales in `quality.py` (doc 14), and
-> the public `build_social_sentiment` orchestrator in `engine.py` (doc 14), and
-> snapshot projection (`project_snapshot`, doc 13), and
+> `providers/discord.py`, doc 06), asset matching (`matching.py`, doc 07),
+> deterministic polar + momentum scoring (`scoring.py`, docs 08, 09, 15),
+> manipulation / organic-quality assessment (`manipulation.py`, doc 10),
+> per-source aggregation / scope (`aggregation.py`, doc 11),
+> fail-soft Redis cache (`cache.py`, doc 12),
+> honest run provenance (`provenance.py`, doc 14),
+> `data_quality` scales (`quality.py`, doc 14),
+> the public `build_social_sentiment` orchestrator (`engine.py`, doc 14),
+> snapshot projection (`project_snapshot`, doc 13),
 > LLM-free / secrets-hygiene scans (`tests/test_llm_free.py`, `tests/test_secrets_hygiene.py`,
-> doc 17), root `README.md` (DOD-14), and
-> `examples/example_result.json` (HAN-06).
+> doc 17), root `README.md` (DOD-14),
+> `examples/example_result.json` (HAN-06), and
+> root `HANDOFF.md` (HAN-04).
 
 This README is the **master index** for the project documentation. It does **not** contain the full
 detail of each topic — instead, each entry below describes *what that document must cover* and maps
@@ -322,7 +323,8 @@ Purpose: deliverables at completion.
 
 ## Next steps
 
-Remaining work: `HANDOFF.md`.
-Do not invent mentions, do not add
-FastAPI/Celery/PostgreSQL, and do not use an LLM. This README is updated only if the overall
-structure or implementation status changes.
+In-scope implementation for this module is complete. Remaining operator steps are
+a clean commit of the working tree and optional push of this **standalone**
+private repo (**HAN-02**, **HAN-03**). Do not invent mentions, do not add
+FastAPI/Celery/PostgreSQL, do not merge or deploy, and do not use an LLM. This
+README is updated only if the overall structure or implementation status changes.
