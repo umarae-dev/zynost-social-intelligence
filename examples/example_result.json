@@ -1,0 +1,95 @@
+{
+  "name": "social_sentiment",
+  "role": "context",
+  "status": "available",
+  "scope": "asset_specific",
+  "classification": "strong_positive",
+  "sentiment_score": 100.0,
+  "confidence": 13.750000000000002,
+  "social_heat": 38.68077192997418,
+  "mention_velocity": 1.3333333333333333,
+  "organic_score": 95.83333333333333,
+  "source_agreement": 1.0,
+  "manipulation_risk": 0.041666666666666685,
+  "metrics": {
+    "horizon_requested": "swing",
+    "horizon_applied": "swing",
+    "mention_count": 11,
+    "unique_authors": 11,
+    "social_acceleration": 0.0,
+    "acceleration_state": "holding",
+    "engagement_weighted_sentiment": 100.0,
+    "positive_count": 11,
+    "neutral_count": 0,
+    "negative_count": 0,
+    "positive_ratio": 1.0,
+    "neutral_ratio": 0.0,
+    "negative_ratio": 0.0,
+    "bullish_phrase_intensity": 0.0,
+    "bearish_phrase_intensity": 0.0,
+    "fear_intensity": 0.0,
+    "greed_excitement_intensity": 0.0,
+    "uncertainty_intensity": 0.0,
+    "euphoria_intensity": 0.0,
+    "mentions_1h": 3,
+    "engagement_velocity": 2.0,
+    "activity_coverage": 0.75,
+    "source_disagreement": 0.0
+  },
+  "sources": {
+    "x": {
+      "status": "available",
+      "mention_count": 6,
+      "unique_authors": 6,
+      "sentiment_score": 100.0,
+      "freshness_seconds": 0.0,
+      "error_class": null
+    },
+    "reddit": {
+      "status": "available",
+      "mention_count": 5,
+      "unique_authors": 5,
+      "sentiment_score": 100.0,
+      "freshness_seconds": 3600.0,
+      "error_class": null
+    },
+    "telegram": {
+      "status": "unavailable",
+      "mention_count": 0,
+      "unique_authors": 0,
+      "sentiment_score": null,
+      "freshness_seconds": null,
+      "error_class": "not_configured"
+    },
+    "discord": {
+      "status": "unavailable",
+      "mention_count": 0,
+      "unique_authors": 0,
+      "sentiment_score": null,
+      "freshness_seconds": null,
+      "error_class": "not_configured"
+    }
+  },
+  "anomalies": [],
+  "observed_at": "2026-09-08T12:00:00Z",
+  "source_class": "multi_source_social_intelligence",
+  "data_quality": {
+    "provider_coverage": 0.5,
+    "freshness_score": 0.0,
+    "asset_match_score": 0.8,
+    "organic_data_ratio": 0.9583333333333333,
+    "providers_available": [
+      "x",
+      "reddit"
+    ],
+    "providers_unavailable": [
+      "telegram",
+      "discord"
+    ],
+    "observation_count": 11,
+    "unique_authors": 11,
+    "duplicate_content_ratio": 0.0,
+    "freshness_seconds": 3600.0,
+    "served_from_cache": false
+  }
+}

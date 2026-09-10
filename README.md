@@ -48,7 +48,8 @@ Required keys: `name`, `role`, `status`, `scope`, `classification`, `sentiment_s
 
 `data_quality` always includes `provider_coverage`, `freshness_score`, `asset_match_score`,
 and `organic_data_ratio`. Classification is one of `strong_positive`, `positive`, `neutral`,
-`mixed`, `negative`, `strong_negative`, `insufficient_data`.
+`mixed`, `negative`, `strong_negative`, `insufficient_data`. A fixture-shaped sample (not a
+live API response) is in `examples/example_result.json`.
 
 `project_snapshot` is a **sync** compact row for later consumer persistence. This module does
 not write PostgreSQL.
